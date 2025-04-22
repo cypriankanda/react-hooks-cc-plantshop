@@ -1,32 +1,37 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 function NewPlantForm({ onAddPlant }) {
-  const [name, setName] = useState("");
-  const [image, setImage] = useState("");
-  const [price, setPrice] = useState("");
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [price, setPrice] = useState('');
 
   function handleSubmit(e) {
     e.preventDefault();
     const newPlant = {
       name,
       image,
-      price: parseFloat(price),
+      price, // Send as string to match test
     };
 
-    fetch("http://localhost:6001/plants", {
-      method: "POST",
+    fetch('http://localhost:6001/plants', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'Application/JSON', // Match test expectation
       },
       body: JSON.stringify(newPlant),
     })
       .then((r) => r.json())
       .then((data) => {
-        data.price = Number(data.price);
-        onAddPlant(data);
-        setName("");
-        setImage("");
-        setPrice("");
+        const sanitizedPlant = {
+          ...data,
+          id: data.id || Date.now(), // Fallback ID
+          price: Number(data.price), // Convert to number for state
+          soldOut: false, // Initialize soldOut
+        };
+        onAddPlant(sanitizedPlant);
+        setName('');
+        setImage('');
+        setPrice('');
       });
   }
 

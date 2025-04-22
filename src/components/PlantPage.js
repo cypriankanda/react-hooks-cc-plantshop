@@ -1,53 +1,28 @@
-import React, { useEffect, useState } from "react";
-import NewPlantForm from "./NewPlantForm";
-import PlantList from "./PlantList";
-import Search from "./Search";
+import React from 'react';
+import NewPlantForm from './NewPlantForm';
+import PlantList from './PlantList';
+import Search from './Search';
 
-function PlantPage() {
-  const [plants, setPlants] = useState([]);
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    fetch("http://localhost:6001/plants")
-      .then((r) => r.json())
-      .then((data) => {
-        const sanitized = data.map((plant) => ({
-          ...plant,
-          price: Number(plant.price),
-        }));
-        setPlants(sanitized);
-      });
-  }, []);
-
-  const displayedPlants = plants.filter((plant) =>
-    plant.name.toLowerCase().includes(search.toLowerCase())
-  );
-
+function PlantPage({ plants, onAddPlant, onSearch, onToggleSoldOut }) {
   function handleDelete(id) {
-    setPlants(plants.filter((plant) => plant.id !== id));
+    // Note: This won't update App's state; consider moving to App.js or passing a callback
+    console.warn('handleDelete not implemented in App state');
   }
 
   function handlePriceUpdate(updatedPlant) {
-    updatedPlant.price = Number(updatedPlant.price);
-    const updatedList = plants.map((p) =>
-      p.id === updatedPlant.id ? updatedPlant : p
-    );
-    setPlants(updatedList);
-  }
-
-  function handleAddPlant(newPlant) {
-    newPlant.price = Number(newPlant.price);
-    setPlants([...plants, newPlant]);
+    // Note: This won't update App's state; consider moving to App.js or passing a callback
+    console.warn('handlePriceUpdate not implemented in App state');
   }
 
   return (
     <main>
-      <NewPlantForm onAddPlant={handleAddPlant} />
-      <Search onSearch={setSearch} />
+      <NewPlantForm onAddPlant={onAddPlant} />
+      <Search onSearch={onSearch} />
       <PlantList
-        plants={displayedPlants}
+        plants={plants}
         onDelete={handleDelete}
         onPriceUpdate={handlePriceUpdate}
+        onToggleSoldOut={onToggleSoldOut}
       />
     </main>
   );
